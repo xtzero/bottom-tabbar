@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <script type="text/javascript" src="js/xt.js" ></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/xt.css" />
+    <script type="text/javascript" charset="utf-8">
+      	mui.init();
+    </script>
+</head>
+<style type="text/css">	
+	.tabbar{
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		height: 66px;
+		background-color: white;
+		display: flex;
+		flex-direction: row;
+		border-top: solid 1px #B6B6B6;
+		z-index: 100000000;
+	}
+	
+	.tabbar-item{
+		width: 20%;
+		text-align: center;
+		padding-top: 10px;
+	}
+	
+	.tabbar-icon{
+		width: 25px;
+		height: 25px;
+	}
+	
+	.tabbar-tip{
+		width: 100%;
+		text-align: center;
+		font-size: 13px;
+	}
+	
+	.tabbar-item-selected{
+		color: #34537C;
+	}
+	
+	#webview{
+		position: absolute;
+		width: 100%;
+		height: calc(100% - 44px);
+		top: 44px;
+		left: 0;
+	}
+</style>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <h1 class="mui-title">干点啥</h1>
+	</header>
+	
+	<div class="tabbar" id="tabbar">
+		<!--
+			底部导航栏
+			使用数组创建
+		-->
+		<!--<span class="tabbar-item">
+			<img class="tabbar-icon" src="images/tabbar-home.png"/>
+			<div class="tabbar-tip tabbar-item-selected">首页</div>
+		</span>
+		<span class="tabbar-item">
+			<img class="tabbar-icon" src="images/tabbar-moments.png"/>
+			<div class="tabbar-tip">故事</div>
+		</span>
+		<span class="tabbar-item">
+			<img class="tabbar-icon" src="images/tabbar-new.png"/>
+			<div class="tabbar-tip">干点啥</div>
+		</span>
+		<span class="tabbar-item">
+			<img class="tabbar-icon" src="images/tabbar-message.png"/>
+			<div class="tabbar-tip">消息</div>
+		</span>
+		<span class="tabbar-item">
+			<img class="tabbar-icon" src="images/tabbar-mine.png"/>
+			<div class="tabbar-tip">我的</div>
+		</span>-->
+	</div>
+	<script type="text/javascript">
+		var doc = document;
+		var tabbar = [
+			{
+				sign : 'home',
+				name : '首页',
+				icon : 'images/tabbar-home.png',
+				selectIcon : 'images/tabbar-home-selected.png',
+				path : 'home.html',
+				selected : true
+			}, 
+			{
+				sign : 'moments',
+				name : '故事',
+				icon : 'images/tabbar-moments.png',
+				selectIcon : 'images/tabbar-moments-selected.png',
+				path : 'moments.html',
+				selected : false
+			},
+			{
+				sign : 'addNew',
+				name : '干点啥',
+				icon : 'images/tabbar-new.png',
+				selectIcon : 'images/tabbar-new.png',
+				path : 'home.html',
+				selected : false
+			},
+			{
+				sign : 'message',
+				name : '消息',
+				icon : 'images/tabbar-message.png',
+				selectIcon : 'images/tabbar-message-selected.png',
+				path : 'message.html',
+				selected : false
+			},
+			{
+				sign : 'mine', 
+				name : '我的',
+				icon : 'images/tabbar-mine.png',
+				selectIcon : 'images/tabbar-mine-selected.png',
+				path : 'mine.html',
+				selected : false
+			},
+		];
+		
+		path = 'home.html';
+		
+		mui.plusReady(function () {
+			loadWebview();
+		    setTabbar();
+		    on();
+		}); 
+		
+		function setTabbar(){
+			doc.getElementById('tabbar').innerHTML = '';
+			var newTabbar = '';
+			mui.each(tabbar,function(i){
+				newTabbar += '<span data-index="'+i+'" class="tabbar-item">'
+								+'<img class="tabbar-icon" src="'+((this.selected)?this.selectIcon:this.icon)+'"/>'
+								+'<div class="tabbar-tip '+((this.selected)?'tabbar-item-selected':'')+'">'+this.name+'</div>'
+							+'</span>';
+							
+				if(this.selected){
+					path = this.path;
+				}
+			});
+		
+			doc.getElementById('tabbar').innerHTML += newTabbar;
+		}
+		
+		function on(){
+			mui('#tabbar').off();
+			mui('#tabbar').on('tap','.tabbar-item',function(){
+				if(this.dataset.index == 2){
+					//点击了加号
+					plus.webview.create('new.html','addNew').show('slide-in-bottom');
+				}else{
+					var i = this.dataset.index;
+					mui.each(tabbar,function(){
+						this.selected = false;
+					})
+					tabbar[i]['selected'] = true;
+					setTabbar();
+					
+					mui.each(tabbar,function(ii){
+						plus.webview.getWebviewById(tabbar[ii]['sign']).hide();
+					})
+					
+					plus.webview.getWebviewById(tabbar[i]['sign']).show();	
+				}
+			})
+		}
+		
+		//webview应该刚进入的时候就全在后台加载好，点击按钮的时候再拍上去
+		function loadWebview(){
+			mui.each(tabbar,function(i){
+				var C = plus.webview.create(this.path,this.sign,{
+					top : '44px',
+					bottom : '66px'
+				},{});
+				
+				plus.webview.currentWebview().append(C);
+				
+				if(this.sign == 'home'){
+					C.show();
+				}
+			});
+		}
+	</script>
+</body>
+</html> 

@@ -1,0 +1,14 @@
+{
+	"index.html": {
+		"resources": [
+			"home.html"
+		],
+		"refer": [
+			"home.html",
+			"moments.html",
+			"mine.html",
+			"message.html",
+			"new.html"
+		]
+	}
+}

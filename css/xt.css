@@ -1,0 +1,55 @@
+.mui-bar{
+	background-color:#34537c;
+}
+
+.mui-bar>.mui-title{
+	color: white;
+}
+
+.mui-bar>.mui-icon{
+	color: white;
+}
+.mui-pull-left{
+	color: #009688;
+}
+
+.mui-icon{
+	color: #009688;
+}
+
+.xt-input{
+	display: block;
+	margin: 10px auto;
+	width: 90%;
+}
+
+.xt-input-line{
+	border-left-width: 0px;
+	border-right-width: 0px;
+	border-top-width: 0px;
+	background-color: #efeff3;
+	width: 85%;
+	font-size: 0.8em;
+}
+
+.xt-btn:active{
+	background-color: gray;
+	color: white;
+}
+
+.xt-btn{
+	width: 90%;
+	border: solid black 1px;
+	color: black;
+	margin: 10px auto;
+	text-align: center;
+}
+
+.xt-file-selector>input{
+	opacity: 0;
+}
+
+.xt-file-selector>span{
+	position: absolute;
+	text-align: center;
+}

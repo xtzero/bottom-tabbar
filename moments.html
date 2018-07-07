@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../css/xt.css" />
+	</head>
+	<style type="text/css">
+		
+	</style>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">故事</h1>
+		</header>
+		<div class="mui-content" id="pullrefresh">
+		    <div id="list">
+		    		
+		    </div>
+		</div>
+		<script src="../js/mui.min.js"></script>
+		<script type="text/javascript" src="../js/dxever.js" ></script>
+		<script type="text/javascript" src="../js/xt.js" ></script>
+		<script type="text/javascript" src="https://www.dxever.com/xt/js/xt.main.js" ></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style:'circle',
+						callback: function(){page.down()}
+					},
+					up: {
+						auto:true,
+						contentrefresh: '正在加载...',
+						callback: function(){page.up()}
+					}
+				}
+			});
+			
+			var page = {
+				up : function(){
+					PAGE ++;
+					list.entry('up');
+				},
+				
+				down : function(){
+					xt.pullrefresh.refresh();
+					PAGE = 1;
+					document.getElementById("list").innerHTML = '';
+					list.entry('down');
+				},
+				
+				loadPageValue : function(){
+					//载入页面变量
+				},
+				
+				on : function(){
+					//页面绑定
+				}
+			}
+			
+			//全局变量
+			var PAGE = 1;
+					
+			mui.plusReady(function () {
+				//页面进入时需要进行三件事
+				
+				//1.载入页面变量
+				page.loadPageValue();
+				
+				//2.进行页面绑定
+				page.on();
+				
+				//3.启动主业务
+				list.entry();
+			});
+			
+			var list = {
+				//是否第一次绑定
+				first : true,
+				
+				//本对象御用容器
+				container : document.getElementById("list"),
+				
+				//调用入口是上拉（up）还是下拉（down）
+				uod : false,
+				
+				entry : function(uod){
+					//入口
+					_this = this;
+					
+					_this.uod = uod;
+					_this.ajax();	
+				},
+				
+				//获取数据
+				ajax : function(){
+					_this = this;
+					if(PAGE == 1){
+						_this.container.innerHTML += '<center id="loading">加载中<center>';
+					}
+					mui.ajax('',{
+						data:{
+							token : plus.storage.getItem('bs_token'),
+						},
+						dataType:'json',//服务器返回json格式数据
+						type:'post',//HTTP请求类型
+						timeout:10000,//超时时间设置为10秒；
+						success:function(xxx){
+							//处理上下拉
+							if(_this.uod == 'up'){
+								xt.pullrefresh.endUp();
+							}else if(_this.uod == 'down'){
+								xt.pullrefresh.down();
+							}
+							
+							if(xxx.meta.code == 200){
+								//成功判断
+								
+								//增加页面元素
+								_this.appendDom(xxx.data);
+							}else if(xxx.meta.code == 401){
+								//单独处理没有更多数据的情况
+								xt.pullrefresh.endUp();
+							}else{
+								//返回错误信息
+								plus.nativeUI.toast('载入列表时出现错误：'+xxx.meta.message);
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							//返回系统错误信息
+							plus.nativeUI.toast('载入列表时出现系统错误：'+type);
+						}
+					});	
+				},
+				
+				//生成页面元素
+				appendDom : function(data){
+					_this = this;
+					
+					(document.getElementById("loading")) && (document.getElementById("loading").remove());
+					
+					var C = document.createElement('div');
+					for(var i in data){
+						C.innerHTML += _this.dom(data[i]); 
+					}
+					
+					document.getElementById('list').appendChild(C);
+					
+					//只在第一次时绑定
+					if(_this.first){
+						_this.on();
+						_this.first = false;
+					}
+				},
+				
+				//页面元素生成器
+				dom : function(i){
+					var dom;
+					dom = 
+					return dom;
+				},
+				
+				//绑定事件
+				on : function(){
+					
+				}
+			}
+		</script>
+	</body>
+
+</html>
