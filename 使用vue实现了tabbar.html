@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/iconfont.css" />
+	</head>
+	<style type="text/css">
+		html,body{
+			background-color: white;
+		}
+		
+		.nav{
+			position: fixed;
+			bottom: 0;
+			width: 100%;
+			height: 44px;
+			display: flex;
+			flex-direction: row;
+			justify-content: space-around;
+			align-items: center;
+			background-color: #34537C;
+		}
+		
+		.nav-item{
+			color: white;
+		}
+	</style>
+	<body>
+		<div class="mui-content" id="maindiv">
+		    <div class="nav">
+		    		<span @click="switchTab(tabs[index].path)" class="nav-item" v-for="(tab,index) in tabs"><i v-html="tab.icon" class="iconfont"></i></span>
+		    </div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/vue.js" ></script>
+		<script type="text/javascript">
+			mui.init();
+			 
+			var tabs = [
+				{
+					icon : '&#xe651;',
+					selectedIcon : '&#xe651;',
+					path : 'main.html',
+					method : 'switch'
+				},
+				{
+					icon : '&#xe6dc;',
+					selectedIcon : '&#xe6dc;',
+					path : 'new.html',
+					method : 'newWindow'
+				},
+				{
+					icon : '&#xe62e;',
+					selectedIcon : '&#xe62e;',
+					path : 'explore.html',
+					method : 'switch'
+				}
+			];
+			
+			var C0,C1,C2;
+			var C = {
+				C0,C1,C2
+			}; 
+						
+			var el = new Vue({
+				el : '#maindiv',
+				data : {
+					tabs : tabs
+				},
+				methods : {
+					switchTab : function(path){
+						plus.webview.getWebviewById(path).show();
+						
+						mui.each(tabs,function(i){
+							plus.webview.getWebviewById(tabs[i].path).hide();
+						})
+					}
+				},
+				
+				mounted : function(){
+					mui.init();
+					mui.plusReady(function () {
+							C.C0 = plus.webview.create(tabs[0].path,tabs[0].path,{
+								top : '0px',
+								bottom : '44px'
+							});
+							plus.webview.currentWebview().append(C.C0);
+							C.C1 = plus.webview.create(tabs[1].path,tabs[1].path,{
+								top : '0px',
+								bottom : '44px'
+							});
+							plus.webview.currentWebview().append(C.C1);
+							C.C2 =	 plus.webview.create(tabs[2].path,tabs[2].path,{
+								top : '0px',
+								bottom : '44px'
+							});
+							plus.webview.currentWebview().append(C.C2);
+							C.C0.addEventListener('loaded',function(){
+								C.C0.show();
+							})
+					});
+				}
+			}); 
+		</script>
+	</body>
+</html>
